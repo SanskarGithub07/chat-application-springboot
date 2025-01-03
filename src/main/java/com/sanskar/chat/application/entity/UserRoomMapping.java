@@ -20,11 +20,11 @@ public class UserRoomMapping {
     private Long mappingId;
     private LocalDateTime joinedAt;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id", referencedColumnName = "roomId", nullable = false)
     private ChatRoom chatRoom;
 }
