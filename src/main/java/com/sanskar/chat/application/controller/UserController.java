@@ -6,12 +6,18 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @GetMapping("/users")
+    public List<User> fetchAllUsers(){
+        return userService.fetchAllUsers();
+    }
     @PostMapping("/users")
     public User saveUser(@Valid @RequestBody User user){
         return userService.saveUser(user);
@@ -27,8 +33,13 @@ public class UserController {
         return userService.fetchUserByEmail(email);
     }
 
-    @PutMapping("/users/update-profile/{name}")
+    @PutMapping("/users/update-profile/name/{name}")
     public User updateProfileByUsername(@PathVariable("name") String userName, @RequestBody User user){
-        return userService.updateProfile(userName, user);
+        return userService.updateProfileByUsername(userName, user);
+    }
+
+    @PutMapping("/users/update-profile/email/{email}")
+    public User updateProfileByEmail(@PathVariable("email") String email, @RequestBody User user){
+           return userService.updateProfileByEmail(email, user);
     }
 }
