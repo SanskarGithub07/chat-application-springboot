@@ -1,10 +1,15 @@
 package com.sanskar.chat.application.service;
 
 import com.sanskar.chat.application.entity.User;
+import com.sanskar.chat.application.entity.VerificationToken;
+import com.sanskar.chat.application.model.UserModel;
 import com.sanskar.chat.application.repository.UserRepository;
+import com.sanskar.chat.application.repository.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -13,8 +18,26 @@ public class UserService implements UserInterface{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private VerificationTokenRepository verificationTokenRepository;
+
     @Override
     public User saveUser(User user){
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User registerUser(UserModel userModel){
+        User user = new User();
+        user.setEmail(userModel.getEmail());
+        user.setUsername(userModel.getUserName());
+        user.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        user.setStatus("Offline");
+        user.setProfilePicture(userModel.getProfilePicture());
+
         return userRepository.save(user);
     }
 
@@ -57,5 +80,29 @@ public class UserService implements UserInterface{
         return userRepository.save(userDB);
     }
 
+    @Override
+    public void saveVerificationTokenForUser(String token, User user) {
+        VerificationToken verificationToken = new VerificationToken(user, token);
+        verificationTokenRepository.save(verificationToken);
+    }
 
+    @Override
+    public String validateVerificationToken(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        if(verificationToken == null){
+            return "invalid";
+        }
+
+        User user = verificationToken.getUser();
+        Calendar cal = Calendar.getInstance();
+
+        if((verificationToken.getExpirationTime().getTime() - cal.getTime().getTime()) <= 0){
+            verificationTokenRepository.delete(verificationToken);
+            return "expired";
+        }
+
+        user.setEnabled(true);
+        userRepository.save(user);
+        return "valid";
+    }
 }
