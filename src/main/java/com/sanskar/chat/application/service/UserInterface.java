@@ -15,4 +15,6 @@ public interface UserInterface {
     public User updateProfileByEmail(String email, User user);
     public void saveVerificationTokenForUser(String token, User user);
     public String validateVerificationToken(String token);
+    public List<User> fetchUserByUsernameContaining(String usernameContains);
+    public List<User> fetchUserByEmailContaining(String emailContains);
 }

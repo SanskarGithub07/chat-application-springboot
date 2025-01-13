@@ -58,6 +58,16 @@ public class UserController {
         return userService.fetchUserByUsername(userName);
     }
 
+    @GetMapping("/users/search-user/name/contains/{value}")
+    public List<User> searchForUserByUsernameContaining(@PathVariable("value") String usernameContains){
+        return userService.fetchUserByUsernameContaining(usernameContains);
+    }
+
+    @GetMapping("/users/search-user/email/contains/{value}")
+    public List<User> searchForUserByEmailContaining(@PathVariable("value") String emailContains){
+        return userService.fetchUserByEmailContaining(emailContains);
+    }
+
     @GetMapping("users/search-user/email/{email}")
     public User searchForUserUsingEmail(@PathVariable("email") String email){
         return userService.fetchUserByEmail(email);

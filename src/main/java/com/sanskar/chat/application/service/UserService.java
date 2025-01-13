@@ -105,4 +105,14 @@ public class UserService implements UserInterface{
         userRepository.save(user);
         return "valid";
     }
+
+    @Override
+    public List<User> fetchUserByUsernameContaining(String usernameContains){
+        return userRepository.findByUsernameContaining(usernameContains);
+    }
+
+    @Override
+    public List<User> fetchUserByEmailContaining(String emailContains) {
+        return userRepository.findByEmailContaining(emailContains);
+    }
 }
