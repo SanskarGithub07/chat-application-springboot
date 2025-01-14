@@ -2,6 +2,8 @@ package com.sanskar.chat.application.event.listener;
 
 import com.sanskar.chat.application.entity.User;
 import com.sanskar.chat.application.event.RegistrationCompleteEvent;
+import com.sanskar.chat.application.model.EmailDetails;
+import com.sanskar.chat.application.service.EmailServiceImpl;
 import com.sanskar.chat.application.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,10 @@ public class RegistrationCompleteEventListener implements
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailServiceImpl emailService;
+
     @Override
     public void onApplicationEvent(RegistrationCompleteEvent event) {
         //Create the verification Token for the User with Link
@@ -29,6 +35,14 @@ public class RegistrationCompleteEventListener implements
         String url = event.getApplicationUrl() + "/verifyRegistration?token=" + token;
 
         //sendVerificationEmail()
-        log.info("Click the link to verify your account: {}", url);
+//        log.info("Click the link to verify your account: {}", url);
+
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(user.getEmail())
+                .subject("Account Verification")
+                .msgBody("Click the link to verify your account:, {" + url + "}")
+                .build();
+
+        emailService.sendSimpleMail(emailDetails);
     }
 }
