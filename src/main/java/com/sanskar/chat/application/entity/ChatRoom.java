@@ -1,5 +1,6 @@
 package com.sanskar.chat.application.entity;
 
+import com.sanskar.chat.application.util.RoomType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,11 +17,15 @@ import java.util.List;
 @Builder
 public class ChatRoom {
     @Id
-    @SequenceGenerator(name = "chatroom_sequence", sequenceName = "chatroom_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chatroom_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
+
+    @Column(nullable = false)
     private String roomName;
-    private String roomType;
+
+    @Enumerated(EnumType.STRING)
+    private RoomType roomType;
+
     private LocalDateTime createdAt;
 
     @OneToMany(

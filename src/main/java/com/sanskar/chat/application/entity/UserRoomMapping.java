@@ -15,16 +15,15 @@ import java.time.LocalDateTime;
 @Builder
 public class UserRoomMapping {
     @Id
-    @SequenceGenerator(name = "mapping_sequence", sequenceName = "mapping_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mapping_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long mappingId;
     private LocalDateTime joinedAt;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "room_id", referencedColumnName = "roomId", nullable = false)
     private ChatRoom chatRoom;
 }
